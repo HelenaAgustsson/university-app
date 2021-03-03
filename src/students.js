@@ -53,15 +53,14 @@ export class StudentDetails extends Component {
 }
 
 export class MyProgram extends Component {
-  myProgram = '';
+  relProgram = '';
   render() {
-    return <li>{this.myProgram.name}</li>;
+    return <li>{this.relProgram.name}</li>;
   }
   mounted() {
     pool.query('SELECT * FROM Programs WHERE id=' + this.props.code, [], (error, results) => {
       if (error) return console.log('error');
-      this.myProgram = results[0];
-      console.log(this.myProgram.name);
+      this.relProgram = results[0];
     });
   }
 }

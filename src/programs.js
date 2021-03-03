@@ -30,10 +30,14 @@ export class ProgramDetails extends Component {
   render() {
     if (!this.program) return null;
     return (
-      <ul>
-        <li>Name: {this.program.name}</li>
-        <li>Code: {this.program.id}</li>
-      </ul>
+      <div>
+        <ul>
+          <li>Name: {this.program.name}</li>
+          <li>Code: {this.program.id}</li>
+        </ul>
+        <div>Studenter på dette programmet:</div>
+        <MyStudents procode={this.program.id} />
+      </div>
     );
   }
   mounted() {
@@ -49,15 +53,18 @@ export class ProgramDetails extends Component {
 }
 
 export class MyStudents extends Component {
-  myStudents = [];
+  relStudents = [];
   render() {
-    return <li>{this.mySt.name}</li>;
+    return <ul>{this.relStudents}</ul>;
   }
   mounted() {
-    pool.query('SELECT * FROM Students WHERE id=' + this.props.code, [], (error, results) => {
-      if (error) return console.log('error');
-      this.myProgram = results[0];
-      console.log(this.myProgram.name);
-    });
+    pool.query(
+      'SELECT * FROM Students WHERE program_id=' + this.props.procode,
+      [],
+      (error, results) => {
+        if (error) return console.log('error');
+        results.map((student) => this.relStudents.push(<li key={student.id}>{student.name}</li>));
+      }
+    );
   }
 }
