@@ -1,13 +1,9 @@
 {
-  "homepage": "https://github.com/HelenaAgustsson/university-app",
   "name": "desktop-application",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "build": "react-scripts build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "start": "electron ."
   },
   "browserslist": [
     "electron 11.2"
