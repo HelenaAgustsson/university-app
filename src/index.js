@@ -5,6 +5,7 @@ import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { pool } from './mysql-pool';
 import { ProgramList, ProgramDetails } from './programs';
 import { StudentDetails, StudentList } from './students';
+import { HospitalsList } from './hospitals';
 
 class Menu extends Component {
   render() {
@@ -18,6 +19,9 @@ class Menu extends Component {
         </NavLink>{' '}
         <NavLink to="/programs" activeStyle={{ color: 'darkblue' }}>
           Programs
+        </NavLink>{' '}
+        <NavLink to="/hospitals" activeStyle={{ color: 'darkblue' }}>
+          Hospitals
         </NavLink>
       </div>
     );
@@ -39,6 +43,7 @@ ReactDOM.render(
       <Route exact path="/students/:id" component={StudentDetails} />
       <Route exact path="/programs" component={ProgramList} />
       <Route exact path="/programs/:id" component={ProgramDetails} />
+      <Route exact path="/hospitals" component={HospitalsList} />
     </div>
   </HashRouter>,
   document.getElementById('root')
