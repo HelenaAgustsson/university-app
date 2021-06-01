@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { pool } from './mysql-pool';
+import { programService } from './service';
 
 export class ProgramList extends Component {
   programs = [];
@@ -18,9 +17,9 @@ export class ProgramList extends Component {
     );
   }
   mounted() {
-    pool.query('SELECT * FROM Programs ', [], (error, results) => {
-      if (error) return console.log('error');
-      this.programs = results;
+    programService.getPrograms((programs) => {
+      this.programs = programs;
+      console.log(this.programs);
     });
   }
 }
@@ -31,40 +30,33 @@ export class ProgramDetails extends Component {
     if (!this.program) return null;
     return (
       <div>
-        <ul>
-          <li>Name: {this.program.name}</li>
-          <li>Code: {this.program.id}</li>
-        </ul>
+        <div>Program: {this.program.name}</div>
         <div>Studenter på dette programmet:</div>
-        <MyStudents procode={this.program.id} />
+        <ProgramStudents programcode={this.program.id} />
       </div>
     );
   }
   mounted() {
-    pool.query(
-      'SELECT * FROM Programs WHERE id=?',
-      [this.props.match.params.id],
-      (error, results) => {
-        if (error) return console.log('error');
-        this.program = results[0];
-      }
-    );
+    programService.getProgram(this.props.match.params.id, (program) => {
+      this.program = program;
+    });
   }
 }
 
-export class MyStudents extends Component {
-  relStudents = [];
+class ProgramStudents extends Component {
+  students = [];
   render() {
-    return <ul>{this.relStudents}</ul>;
+    return (
+      <ul>
+        {this.students.map((student, id) => (
+          <li key={student.id}>{student.name}</li>
+        ))}
+      </ul>
+    );
   }
   mounted() {
-    pool.query(
-      'SELECT * FROM Students WHERE program_id=' + this.props.procode,
-      [],
-      (error, results) => {
-        if (error) return console.log('error');
-        results.map((student) => this.relStudents.push(<li key={student.id}>{student.name}</li>));
-      }
-    );
+    programService.getProgramStudents(this.props.programcode, (students) => {
+      this.students = students;
+    });
   }
 }

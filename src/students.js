@@ -1,66 +1,49 @@
 import * as React from 'react';
 import { Component } from 'react-simplified';
-import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
-import { pool } from './mysql-pool';
-import { ProgramList, ProgramDetails } from './programs';
+import { programService, studentService } from './service';
 
 export class StudentList extends Component {
   students = [];
   render() {
     return (
-      <ul>
-        {this.students.map((student, id) => (
-          <li key={student.id}>
-            <NavLink to={'/students/' + student.id}>{student.name}</NavLink>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <ul>
+          {this.students.map((student, id) => (
+            <li key={student.id}>
+              <NavLink to={'/students/' + student.id}>{student.name}</NavLink>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
   mounted() {
-    pool.query('SELECT * FROM Students ', [], (error, results) => {
-      if (error) return console.log('error');
-      this.students = results;
+    studentService.getStudents((students) => {
+      this.students = students;
     });
   }
 }
 
 export class StudentDetails extends Component {
   student = null;
-  program = null;
+  programName = '';
   render() {
     if (!this.student) return null;
     return (
       <ul>
         <li>Name: {this.student.name}</li>
         <li>Email: {this.student.email}</li>
-        <li>Program id: {this.student.program_id}</li>
-        <MyProgram code={this.student.program_id} />
+        <li>Program name: {this.programName}</li>
       </ul>
     );
   }
   mounted() {
-    pool.query(
-      'SELECT * FROM Students  WHERE id=?',
-      [this.props.match.params.id],
-      (error, results) => {
-        if (error) return console.log('error');
-        this.student = results[0];
-      }
-    );
-  }
-}
-
-export class MyProgram extends Component {
-  relProgram = '';
-  render() {
-    return <li>{this.relProgram.name}</li>;
-  }
-  mounted() {
-    pool.query('SELECT * FROM Programs WHERE id=' + this.props.code, [], (error, results) => {
-      if (error) return console.log('error');
-      this.relProgram = results[0];
+    studentService.getStudent(this.props.match.params.id, (student) => {
+      this.student = student;
+      programService.getProgram(this.student.program_id, (program) => {
+        this.programName = program.name;
+      });
     });
   }
 }
