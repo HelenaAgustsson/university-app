@@ -7,13 +7,16 @@ export class ProgramList extends Component {
   programs = [];
   render() {
     return (
-      <ul>
-        {this.programs.map((program, id) => (
-          <li key={program.id}>
-            <NavLink to={'/programs/' + program.id}>{program.name}</NavLink>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <h4>Bachelor program på NTNU</h4>
+        <ul>
+          {this.programs.map((program, id) => (
+            <li key={program.id}>
+              <NavLink to={'/programs/' + program.id}>{program.name}</NavLink>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
   mounted() {
@@ -30,7 +33,7 @@ export class ProgramDetails extends Component {
     if (!this.program) return null;
     return (
       <div>
-        <div>Program: {this.program.name}</div>
+        <h4>{this.program.name}</h4>
         <div>Studenter på dette programmet:</div>
         <ProgramStudents programcode={this.program.id} />
       </div>

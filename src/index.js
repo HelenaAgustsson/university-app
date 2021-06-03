@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { NavLink, HashRouter, Route } from 'react-router-dom';
 import { pool } from './mysql-pool';
 import { ProgramList, ProgramDetails } from './programs';
-import { StudentDetails, StudentList } from './students';
+import { StudentDetails, StudentList, StudentNew } from './students';
 
 class Menu extends Component {
   render() {
@@ -37,6 +37,7 @@ ReactDOM.render(
       <Route exact path="/" component={Home} />
       <Route exact path="/students" component={StudentList} />
       <Route exact path="/students/:id" component={StudentDetails} />
+      <Route exact path="/new-student" component={StudentNew} />
       <Route exact path="/programs" component={ProgramList} />
       <Route exact path="/programs/:id" component={ProgramDetails} />
     </div>
