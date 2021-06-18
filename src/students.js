@@ -48,7 +48,7 @@ export class StudentDetails extends Component {
           <li>Email: {this.student.email}</li>
           <li>Program: {this.program}</li>
         </ul>
-        <button type="button" onClick={this.delete}>
+        <button type="button" onClick={this.edit}>
           Edit
         </button>{' '}
         <button type="button" onClick={this.delete}>
@@ -60,6 +60,7 @@ export class StudentDetails extends Component {
   mounted() {
     studentService.getStudent(this.props.match.params.id, (student) => {
       this.student = student;
+      // join statement??
       studentService.getStudentsProgram(this.student.program_id, (program) => {
         this.program = program;
       });
@@ -130,5 +131,96 @@ export class StudentNew extends Component {
     studentService.addStudent(this.student, () => {
       history.push('/students');
     });
+  }
+}
+
+export class StudentEdit extends Component {
+  student = null;
+  programs = [];
+  programName = '';
+
+  render() {
+    if (!this.student) return null;
+
+    return (
+      <div>
+        <ul>
+          <li>
+            Name:{' '}
+            <input
+              value={this.student.name}
+              onChange={(event) => {
+                this.student.name = event.currentTarget.value;
+              }}
+            />
+          </li>
+          <li>Student ID:{this.student.id} </li>
+          <li>
+            Email:{' '}
+            <input
+              value={this.student.email}
+              onChange={(event) => {
+                this.student.email = event.currentTarget.value;
+              }}
+            />{' '}
+          </li>
+          <li>
+            Studieprogram:{''}
+            <select
+              value={this.student.program_id}
+              onChange={(event) => {
+                this.student.program_id = event.currentTarget.value;
+              }}
+            >
+              <option>--</option>
+              {this.programs.map((program) => (
+                <option key={program.id} value={program.id}>
+                  {program.name}
+                </option>
+              ))}
+            </select>
+          </li>
+        </ul>
+        <button
+          type="button"
+          onClick={() => {
+            studentService.updateStudent(this.student, () => {
+              history.push('/students/' + this.student.id);
+            });
+          }}
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            studentService.deleteStudent(this.student.id, () => {
+              //StudentDetails.instance().mounted();
+              //StudentList.instance().mounted();
+            });
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    );
+  }
+  mounted() {
+    studentService.getStudent(this.props.match.params.id, (student) => {
+      this.student = student;
+      programService.getProgram(this.student.program_id, (program) => (this.programName = program));
+    });
+
+    programService.getPrograms((programs) => {
+      this.programs = programs;
+    });
+  }
+  save() {
+    studentService.updateStudent(this.student, () => {
+      //history.push('/students/' + this.student.id);
+    });
+  }
+  delete() {
+    studentService.deleteStudent(this.student.id, () => history.push('/students'));
   }
 }
